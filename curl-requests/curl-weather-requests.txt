@@ -1,0 +1,152 @@
+	-	POST /weather → create weather (city, temp, condition)
+	-	GET /weather → list all weather reports
+	-	GET /weather/:id → read a weather report
+	-	PATCH /weather/:id → partial update
+	-	DELETE /weather/:id → delete
+	-	GET /weather/city/:city
+	-	GET /weather/country/:country
+	-	DELETE /weather → delete all (dev only)
+
+// POST that will pass thanks to the pipe that sanitizes it
+curl -X POST http://localhost:6000/weather \
+     -H "Content-Type: application/json" \
+     -H "x-auth-weather: JOECOOL123" \
+     -d '{
+       "city": "  pAris<script>  ",
+       "country": "France",
+       "temperature": 18,
+       "condition": "sunny",
+       "userId": "user-1"
+     }'
+
+// POST that will not pass
+curl -X POST http://localhost:6000/weather \
+     -H "Content-Type: application/json" \
+     -H "x-auth-weather: JOECOOL123" \
+     -d '{"city": "<>", "country": "FR", "temperature": 20, "condition": "sunny", "userId": "user-1"}'
+
+// create reports
+curl -X POST http://localhost:6000/weather \
+     -H "Content-Type: application/json" \
+     -H "x-auth-weather: JOECOOL123" \
+     -d '{
+       "city": "chamonix",
+       "country": "France",
+       "temperature": -5,
+       "condition": "snowy",
+       "userId": "user-1"
+     }'
+curl -X POST http://localhost:6000/weather \
+     -H "Content-Type: application/json" \
+     -H "x-auth-weather: JOECOOL123" \
+     -d '{
+       "city": "london",
+       "country": "UK",
+       "temperature": 10.4312,
+       "condition": "rainy",
+       "userId": "user-2"
+     }'
+curl -X POST http://localhost:6000/weather \
+     -H "Content-Type: application/json" \
+     -H "x-auth-weather: JOECOOL123" \
+     -d '{
+       "city": "Tokyo",
+       "country": "Japan",
+       "temperature": 15,
+       "condition": "cloudy",
+       "userId": "user-3"
+     }'
+curl -X POST http://localhost:6000/weather \
+     -H "Content-Type: application/json" \
+     -H "x-auth-weather: JOECOOL123" \
+     -d '{
+       "city": "Tokyo",
+       "country": "Japan",
+       "temperature": 34,
+       "condition": "sunny",
+       "userId": "user-3"
+     }'
+
+curl -X POST http://localhost:6000/weather \
+     -H "Content-Type: application/json" \
+     -H "x-auth-weather: JOECOOL123" \
+     -d '{
+       "city": "New York",
+       "country": "USA",
+       "temperature": 22,
+       "condition": "stormy",
+       "userId": "user-3"
+     }'
+curl -X POST http://localhost:6000/weather \
+     -H "Content-Type: application/json" \
+     -H "x-auth-weather: JOECOOL123" \
+     -d '{
+       "city": "Madrid",
+       "country": "Spain",
+       "temperature": 28,
+       "condition": "sunny",
+       "userId": "user-1"
+     }'
+
+// UPDATE (that works) a report
+curl -X PATCH http://localhost:6000/weather/<UUID> \
+     -H "Content-Type: application/json" \
+     -H "x-auth-weather: JOECOOL123" \
+     -d '{
+       "temperature": -10
+     }'
+
+
+// UPDATE (that fails due to temperature) a report
+curl -X PATCH http://localhost:6000/weather/<UUID> \
+     -H "Content-Type: application/json" \
+     -H "x-auth-weather: JOECOOL123" \
+     -d '{
+       "temperature": 80
+     }'
+
+// UPDATE (that fails due to wrong auth) a report
+curl -X PATCH http://localhost:6000/weather/<UUID> \
+     -H "Content-Type: application/json" \
+     -d '{"condition": "sunny"}'
+
+// get Tokyo city
+curl http://localhost:6000/weather/city/Tokyo
+
+// get USA
+curl http://localhost:6000/weather/country/USA
+
+// get all weather reports
+curl -X GET http://localhost:6000/weather
+
+// get a report
+curl -X GET http://localhost:6000/weather/<UUID>
+
+
+// POST wrong auth token
+curl -X POST http://localhost:6000/weather \
+     -H "Content-Type: application/json" \
+     -H "x-auth-weather: MAUVAIS_CODE" \
+     -d '{"city": "Paris", "country": "France", "temperature": 20, "condition": "sunny", "userId": "user-1"}'
+
+
+
+// POST wrong temperature
+curl -X POST http://localhost:6000/weather \
+     -H "Content-Type: application/json" \
+     -H "x-auth-weather: JOECOOL123" \
+     -d '{
+       "city": "Mars",
+       "country": "Espace",
+       "temperature": -100,
+       "condition": "stormy",
+       "userId": "user-1"
+     }'
+
+// delete with good auth
+curl -X DELETE http://localhost:6000/weather/<UUID> \
+     -H "x-auth-weather: JOECOOL123"
+
+// delete with wrong auth
+curl -X DELETE http://localhost:6000/weather/<UUID> \
+     -H "x-auth-weather: WRONG_TOKEN"	
