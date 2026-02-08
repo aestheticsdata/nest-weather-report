@@ -25,13 +25,20 @@ Creates a new weather report. Requires authentication.
 - `x-auth-weather: JOECOOL123` (required)
 
 **Request Body:**
+- `city` (string, required) - City name
+- `country` (string, required) - Country name
+- `temperature` (number, required) - Temperature in degrees (Range: -70 to 50)
+- `condition` (string, required) - Weather condition: `"sunny"`, `"rainy"`, `"cloudy"`, `"stormy"`, or `"snowy"`
+- `userId` (string, required) - User ID
+
+**Example:**
 ```json
 {
-  "city": "string",
-  "country": "string",
-  "temperature": number,  // Range: -70 to 50
-  "condition": "sunny" | "rainy" | "cloudy" | "stormy" | "snowy",
-  "userId": "string"
+  "city": "Paris",
+  "country": "France",
+  "temperature": 18,
+  "condition": "sunny",
+  "userId": "user-1"
 }
 ```
 
@@ -142,13 +149,16 @@ Partially updates a weather report. Requires authentication.
 - `id` (string) - The unique identifier of the weather report
 
 **Request Body:** (all fields are optional)
+- `city` (string, optional) - City name
+- `country` (string, optional) - Country name
+- `temperature` (number, optional) - Temperature in degrees (Range: -70 to 50)
+- `condition` (string, optional) - Weather condition: `"sunny"`, `"rainy"`, `"cloudy"`, `"stormy"`, or `"snowy"`
+- `userId` (string, optional) - User ID
+
+**Example:**
 ```json
 {
-  "city": "string",
-  "country": "string",
-  "temperature": number,  // Range: -70 to 50
-  "condition": "sunny" | "rainy" | "cloudy" | "stormy" | "snowy",
-  "userId": "string"
+  "temperature": -10
 }
 ```
 
