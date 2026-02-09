@@ -17,15 +17,23 @@ export class WeatherLoggerInterceptor implements NestInterceptor {
 
         const reports = Array.isArray(data) ? data : [data];
 
-        const logData = reports.map((r) => ({
-          id: r.id,
-          city: r.city,
-          temp: `${r.temperature}°C`,
-          condition: r.condition,
-          user: r.user?.username || 'Unknown',
-        }));
+        // Filter out undefined/null elements before mapping to avoid errors
+        const logData = reports
+          .filter((r) => r != null && r.id != null)
+          .map((r) => ({
+            id: r.id,
+            city: r.city,
+            temp: `${r.temperature}°C`,
+            condition: r.condition,
+            user: r.user?.username || 'Unknown',
+          }));
 
-        console.table(logData);
+        // Only log if there's data to display
+        if (logData.length > 0) {
+          console.table(logData);
+        } else {
+          console.log('No weather reports to display');
+        }
       }),
     );
   }
